@@ -1,0 +1,12 @@
+{
+  "name": "jesterbot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "author": "cherry",
+  "license": "ISC",
+  "dependencies": {
+    "discord.js": "^14.11.0",
+    "dotenv": "^16.3.1"
+  }
+}
