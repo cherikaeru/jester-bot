@@ -86,7 +86,6 @@ function assignRoleToUser() {
 
   // Remove role from previous user
   if (userList.assignedUser != null) {
-    console.log(userList.assignedUser)
     let old = guild.members.cache.get(userList.assignedUser);
     guild.members.cache.get(userList.assignedUser).roles.remove(role).then(() => {
       console.log(`Removed role from user ${old.user.username}`);
@@ -141,7 +140,7 @@ function getNextDay() {
   const dayOfWeek = now.getDay();
   const daysUntilNextDay = dayOfWeek <= 2 ? 2 - dayOfWeek : 9 - dayOfWeek;
   const nextDay = new Date(now.getFullYear(), now.getMonth(), now.getDate() + daysUntilNextDay);
-  nextDay.setHours(21, 4, 0, 0); // Set time to 6:30 PM
+  nextDay.setHours(18, 30, 0, 0); // Set time to 6:30 PM
   return nextDay;
 }
 
