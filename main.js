@@ -96,11 +96,11 @@ function assignRoleToUser() {
       console.log(`Assigned role to user ${member.user.username}`);
       const embed = new EmbedBuilder()
         .setColor(0xe0707c)
-        .setTitle('A New Jester is Being Declared!')
+        .setTitle(`A New ${role.name} is Being Declared!`)
         .setAuthor({ name: `${client.user.username}, the towncrier`, iconURL: `https://cdn.discordapp.com/avatars/${client.user.id}/${client.user.avatar}.webp`, url: 'https://cherikaeru.github.io/' })
         .setDescription('Hear ye, hear ye...')
         .setThumbnail(`https://cdn.discordapp.com/avatars/${member.user.id}/${member.user.avatar}.webp`)
-        .addFields({ name: `**The new jester is ${member.user.username}**`, value: '**Point and laugh at them NOW**' })
+        .addFields({ name: `**The new ${role.name} is ${member.user.username}**`, value: '👏' })
         .setTimestamp()
         .setFooter({ text: 'Bot made by cherry (@cherikaeru)', iconURL: `https://images-ext-1.discordapp.net/external/OsFlFECjRgZhjWxHXdsklJJiue5b_FUshIvJsx1BYYI/https/cdn.discordapp.com/avatars/271370042627588096/c08dabc6468147b37e75c2a63fd34798.webp`, url: 'https://cherikaeru.github.io/' });
       channel.send({ embeds: [embed] });
