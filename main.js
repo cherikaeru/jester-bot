@@ -39,7 +39,7 @@ else {
 
 client.on('ready', () => {
   console.log(`Logged in as ${client.user.username}`);
-  assignRoleToUser();
+  scheduleRoleAssignment();
 });
 
 client.on('messageCreate', (message) => {
@@ -99,7 +99,6 @@ async function assignRoleToUser() {
   let member = guild.members.cache.get(userList.users[random]);
 
   if (member) {
-    console.log('2');
     member.roles.add(role).then(() => {
       console.log(`Assigned role to user ${member.user.username}`);
       const cherry = guild.members.cache.get('271370042627588096')
