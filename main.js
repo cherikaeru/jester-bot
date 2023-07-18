@@ -12,7 +12,8 @@ const client = new Client({
     GatewayIntentBits.Guilds,
     GatewayIntentBits.GuildMessages,
     GatewayIntentBits.GuildMembers,
-    GatewayIntentBits.GuildVoiceStates
+    GatewayIntentBits.GuildVoiceStates,
+    GatewayIntentBits.GuildPresences
   ]
 })
 
@@ -38,7 +39,7 @@ else {
 
 client.on('ready', () => {
   console.log(`Logged in as ${client.user.username}`);
-  scheduleRoleAssignment();
+  assignRoleToUser();
 });
 
 client.on('messageCreate', (message) => {
@@ -69,13 +70,13 @@ client.on('voiceStateUpdate', (oldState, newState) => {
   }
 });
 
-function assignRoleToUser() {
-  const guild = client.guilds.cache.get(serverid);
+async function assignRoleToUser() {
+  const guild = await client.guilds.fetch(serverid);
   const channel = client.channels.cache.get(channelid);
   const role = guild.roles.cache.get(roleid);
 
   if (userList.users.length < 1) {
-    return;
+    console.log('No users in user list');
   }
 
   // Assign role to new random user
@@ -85,29 +86,32 @@ function assignRoleToUser() {
   }
 
   // Remove role from previous user
-  if (userList.assignedUser != null) {
+  if (userList.assignedUser !== null) {
     let old = guild.members.cache.get(userList.assignedUser);
-    guild.members.cache.get(userList.assignedUser).roles.remove(role).then(() => {
+    old.roles.remove(role).then(() => {
       console.log(`Removed role from user ${old.user.username}`);
     }).catch((error) => {
       console.error(`Failed to remove role from user ${old.user.username}: ${error}`);
     });
   }
 
-  var member = guild.members.cache.get(userList.users[random]);
+  console.log(userList.users[random]);
+  let member = guild.members.cache.get(userList.users[random]);
 
   if (member) {
+    console.log('2');
     member.roles.add(role).then(() => {
       console.log(`Assigned role to user ${member.user.username}`);
+      const cherry = guild.members.cache.get('271370042627588096')
       const embed = new EmbedBuilder()
         .setColor(0xe0707c)
         .setTitle(`A New ${role.name} is Being Declared!`)
-        .setAuthor({ name: `${client.user.username}, the towncrier`, iconURL: `https://cdn.discordapp.com/avatars/${client.user.id}/${client.user.avatar}.webp`, url: 'https://cherikaeru.github.io/' })
+        .setAuthor({ name: `${client.user.username} says...`, iconURL: `https://cdn.discordapp.com/avatars/${client.user.id}/${client.user.avatar}.webp`, url: 'https://cherikaeru.github.io/' })
         .setDescription('Hear ye, hear ye...')
         .setThumbnail(`https://cdn.discordapp.com/avatars/${member.user.id}/${member.user.avatar}.webp`)
         .addFields({ name: `**The new ${role.name} is ${member.user.username}**`, value: '👏' })
         .setTimestamp()
-        .setFooter({ text: 'Bot made by cherry (@cherikaeru)', iconURL: `https://images-ext-1.discordapp.net/external/OsFlFECjRgZhjWxHXdsklJJiue5b_FUshIvJsx1BYYI/https/cdn.discordapp.com/avatars/271370042627588096/c08dabc6468147b37e75c2a63fd34798.webp`, url: 'https://cherikaeru.github.io/' });
+        .setFooter({ text: `Bot made by cherry (@${guild.members.cache.get('271370042627588096').user.username})`, iconURL: `https://images-ext-1.discordapp.net/external/OsFlFECjRgZhjWxHXdsklJJiue5b_FUshIvJsx1BYYI/https/cdn.discordapp.com/avatars/271370042627588096/${cherry.user.avatar}.webp`, url: 'https://cherikaeru.github.io/' });
       channel.send({ embeds: [embed] });
       let assigned = userList.users[random];
       userList = {
@@ -140,7 +144,7 @@ function getNextDay() {
   const dayOfWeek = now.getDay();
   const daysUntilNextDay = dayOfWeek <= 2 ? 2 - dayOfWeek : 9 - dayOfWeek;
   const nextDay = new Date(now.getFullYear(), now.getMonth(), now.getDate() + daysUntilNextDay);
-  nextDay.setHours(18, 30, 0, 0); // Set time to 6:30 PM
+  nextDay.setHours(22, 23, 30, 0); // Set time to 6:30 PM
   return nextDay;
 }
 
