@@ -1,2 +1,2 @@
-# jester-bot
+# weekly-role-bot
 A discord bot which assigns a role to a random active user each week
