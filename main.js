@@ -1,9 +1,9 @@
 require('dotenv').config();
 
-const token = String(process.env.TOKEN);
-const serverid = String(process.env.SERVERID);
-const roleid = String(process.env.ROLEID);
-const channelid = String(process.env.CHANNELID);
+const token = process.env.TOKEN;
+const serverid = process.env.SERVERID;
+const roleid = process.env.ROLEID;
+const channelid = process.env.CHANNELID;
 
 const fs = require('fs');
 const { Client, GatewayIntentBits, EmbedBuilder } = require('discord.js')
@@ -26,7 +26,9 @@ let userList = {
 if (fs.existsSync('userlist.json')) {
   const userListData = fs.readFileSync('userlist.json');
   userList = JSON.parse(userListData);
-  userList.users = Array.from(userList.users);
+  if (!userList.users) {
+    userList.users = Array.from(userList.users);
+  }
 }
 else {
   const userListData = JSON.stringify(userList, null, 2);
@@ -76,20 +78,24 @@ function assignRoleToUser() {
     return;
   }
 
-  // Remove role from previous user
-  if (userList.assignedUser !== null) {
-    const member = guild.members.cache.get(userList.assignedUser);
-    member.roles.remove(role);
-    console.log(`Removed role from user ${member.user.username}`);
-  }
-
   // Assign role to new random user
-  const random = Math.floor(Math.random() * userList.users.length);
+  var random = Math.floor(Math.random() * userList.users.length);
   while (userList.users[random] == userList.assignedUser && userList.users.length > 1) {
     random = Math.floor(Math.random() * userList.users.length);
   }
 
-  const member = guild.members.cache.get(userList.users[random]);
+  // Remove role from previous user
+  if (userList.assignedUser != null) {
+    console.log(userList.assignedUser)
+    let old = guild.members.cache.get(userList.assignedUser);
+    guild.members.cache.get(userList.assignedUser).roles.remove(role).then(() => {
+      console.log(`Removed role from user ${old.user.username}`);
+    }).catch((error) => {
+      console.error(`Failed to remove role from user ${old.user.username}: ${error}`);
+    });
+  }
+
+  var member = guild.members.cache.get(userList.users[random]);
 
   if (member) {
     member.roles.add(role).then(() => {
@@ -135,7 +141,7 @@ function getNextDay() {
   const dayOfWeek = now.getDay();
   const daysUntilNextDay = dayOfWeek <= 2 ? 2 - dayOfWeek : 9 - dayOfWeek;
   const nextDay = new Date(now.getFullYear(), now.getMonth(), now.getDate() + daysUntilNextDay);
-  nextDay.setHours(18, 30, 0, 0); // Set time to 6:30 PM
+  nextDay.setHours(21, 4, 0, 0); // Set time to 6:30 PM
   return nextDay;
 }
 
