@@ -40,7 +40,10 @@ else {
 
 client.on('ready', () => {
   console.log(`Logged in as ${client.user.username}`);
-  scheduleRoleAssignment();
+  scheduleRoleAssignment(getNextDay(), () => {
+    console.log('Assigning new user to role...');
+    assignRoleToUser();
+  });
 });
 
 client.on('messageCreate', (message) => {
@@ -94,7 +97,7 @@ async function assignRoleToUser() {
 
   // Remove role from previous user
   if (userList.assignedUser !== null) {
-    let old = guild.members.cache.get(userList.assignedUser);
+    const old = guild.members.cache.get(userList.assignedUser);
     old.roles.remove(role).then(() => {
       console.log(`Removed role from user ${old.user.username}`);
     }).catch((error) => {
@@ -102,8 +105,7 @@ async function assignRoleToUser() {
     });
   }
 
-  console.log(userList.users[random]);
-  let member = guild.members.cache.get(userList.users[random]);
+  const member = guild.members.cache.get(userList.users[random]);
 
   if (member) {
     member.roles.add(role).then(() => {
@@ -119,7 +121,7 @@ async function assignRoleToUser() {
         .setTimestamp()
         .setFooter({ text: `Bot made by cherry (@${guild.members.cache.get('271370042627588096').user.username})`, iconURL: `https://images-ext-1.discordapp.net/external/OsFlFECjRgZhjWxHXdsklJJiue5b_FUshIvJsx1BYYI/https/cdn.discordapp.com/avatars/271370042627588096/${cherry.user.avatar}.webp`, url: 'https://cherikaeru.github.io/' });
       channel.send({ embeds: [embed] });
-      channel.send(`@${member}`);
+      channel.send(`${member}`);
       let assigned = userList.users[random];
       userList = {
         users: [],
@@ -133,25 +135,24 @@ async function assignRoleToUser() {
   }
 }
 
-// Time Related Functions
-function scheduleRoleAssignment(offset = 0) {
-  const nextDay = getNextDay();
-  nextDay.setDate(nextDay.getDate() + offset);
-  const timeUntilNextDay = nextDay.getTime() - Date.now();
+// Time scheduling
+function scheduleRoleAssignment(date, callback) {
+  const now = new Date();
+  const timeUntilDate = date.getTime() - now.getTime();
 
-  setTimeout(() => {
-    assignRoleToUser();
-    scheduleRoleAssignment(7);
-  }, timeUntilNextDay);
-
+  if (timeUntilDate <= 0) {
+    callback();
+  } else {
+    setTimeout(callback, timeUntilDate);
+  }
 }
 
 function getNextDay() {
   const now = new Date();
   const dayOfWeek = now.getDay();
-  const daysUntilNextDay = dayOfWeek <= 2 ? 3 - dayOfWeek : 10 - dayOfWeek;
+  const daysUntilNextDay = dayOfWeek <= 3 ? 3 - dayOfWeek : 10 - dayOfWeek;
   const nextDay = new Date(now.getFullYear(), now.getMonth(), now.getDate() + daysUntilNextDay);
-  nextDay.setHours(17, 7, 0, 0); // Set time to 5:00 PM
+  nextDay.setHours(17, 35, 0, 0); // Set time to 5:00 PM
   return nextDay;
 }
 
