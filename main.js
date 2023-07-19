@@ -119,6 +119,7 @@ async function assignRoleToUser() {
         .setTimestamp()
         .setFooter({ text: `Bot made by cherry (@${guild.members.cache.get('271370042627588096').user.username})`, iconURL: `https://images-ext-1.discordapp.net/external/OsFlFECjRgZhjWxHXdsklJJiue5b_FUshIvJsx1BYYI/https/cdn.discordapp.com/avatars/271370042627588096/${cherry.user.avatar}.webp`, url: 'https://cherikaeru.github.io/' });
       channel.send({ embeds: [embed] });
+      channel.send(`@${member}`);
       let assigned = userList.users[random];
       userList = {
         users: [],
