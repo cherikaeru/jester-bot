@@ -11,6 +11,7 @@ const client = new Client({
   intents: [
     GatewayIntentBits.Guilds,
     GatewayIntentBits.GuildMessages,
+    GatewayIntentBits.GuildMessageReactions,
     GatewayIntentBits.GuildMembers,
     GatewayIntentBits.GuildVoiceStates,
     GatewayIntentBits.GuildPresences
@@ -50,9 +51,16 @@ client.on('messageCreate', (message) => {
 
   // Check if user is already in the list
   const user = message.author;
+  const guild = client.guilds.fetch(serverid).then(() => {
+    if (user == guild.members.cache.get(userList.assignedUser) && Math.random() < 0.15) {
+      message.react('🫵'); message.react('🤣'); message.react('💯'); message.react('💀');
+      console.log(`Reacted to message. ${Date.now()}`)
+    }
+  });
+
   if (!userList.users.includes(user.id)) {
     userList.users.push(user.id);
-    console.log(`${user.username} has been added to the user list.`);
+    console.log(`${user.username} has been added to the user list. ${Date.now()}`);
     saveUserList();
   }
 });
@@ -64,7 +72,7 @@ client.on('voiceStateUpdate', (oldState, newState) => {
   if (newState.channel && !oldState.channel) {
     if (!userList.users.includes(user.id)) {
       userList.users.push(user.id);
-      console.log(`${user.username} has been added to the user list.`);
+      console.log(`${user.username} has been added to the user list. ${Date.now()}`);
       saveUserList();
     }
   }
@@ -151,7 +159,6 @@ function getNextDay() {
 function saveUserList() {
   const userListData = JSON.stringify(userList, null, 2);
   fs.writeFileSync('userlist.json', userListData);
-  console.log('User list saved');
 }
 
 client.login(token);
