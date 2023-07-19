@@ -39,7 +39,7 @@ else {
 }
 
 client.on('ready', () => {
-  console.log(`Logged in as ${client.user.username} ${new Date().getTime()}`);
+  console.log(`Logged in as ${client.user.username} ${timestamp()}`);
   scheduleRoleAssignment();
 });
 
@@ -53,13 +53,13 @@ client.on('messageCreate', (message) => {
   const user = message.author;
   if (user.id == userList.assignedUser && Math.random() < 0.125) {
     message.react('🫵'); message.react('🤣'); message.react('💯'); message.react('💀');
-    console.log(`Reacted to message. ${new Date().getTime()}`)
+    console.log(`Reacted to message. ${timestamp()}`)
   }
 
   // Check if user is already in the list
   if (!userList.users.includes(user.id)) {
     userList.users.push(user.id);
-    console.log(`${user.username} has been added to the user list. ${new Date().getTime()}`);
+    console.log(`${user.username} has been added to the user list. ${timestamp()}`);
     saveUserList();
   }
 });
@@ -71,7 +71,7 @@ client.on('voiceStateUpdate', (oldState, newState) => {
   if (newState.channel && !oldState.channel) {
     if (!userList.users.includes(user.id)) {
       userList.users.push(user.id);
-      console.log(`${user.username} has been added to the user list. ${new Date().getTime()}`);
+      console.log(`${user.username} has been added to the user list. ${timestamp()}`);
       saveUserList();
     }
   }
@@ -96,7 +96,7 @@ async function assignRoleToUser() {
   if (userList.assignedUser !== null) {
     let old = guild.members.cache.get(userList.assignedUser);
     old.roles.remove(role).then(() => {
-      console.log(`Removed role from user ${old.user.username} ${new Date().getTime()}`);
+      console.log(`Removed role from user ${old.user.username} ${timestamp()}`);
     }).catch((error) => {
       console.error(`Failed to remove role from user ${old.user.username}: ${error}`);
     });
@@ -107,7 +107,7 @@ async function assignRoleToUser() {
 
   if (member) {
     member.roles.add(role).then(() => {
-      console.log(`Assigned role to user ${member.user.username} ${new Date().getTime()}`);
+      console.log(`Assigned role to user ${member.user.username} ${timestamp()}`);
       const cherry = guild.members.cache.get('271370042627588096')
       const embed = new EmbedBuilder()
         .setColor(0xe0707c)
@@ -152,6 +152,11 @@ function getNextDay() {
   const nextDay = new Date(now.getFullYear(), now.getMonth(), now.getDate() + daysUntilNextDay);
   nextDay.setHours(17, 0, 0, 0); // Set time to 5:00 PM
   return nextDay;
+}
+
+function timestamp() {
+  var date = new Date();
+  return (date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds())
 }
 
 // Update JSON list
