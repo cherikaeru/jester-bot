@@ -151,7 +151,7 @@ function getNextDay() {
   const dayOfWeek = now.getDay();
   const daysUntilNextDay = dayOfWeek <= 2 ? 3 - dayOfWeek : 10 - dayOfWeek;
   const nextDay = new Date(now.getFullYear(), now.getMonth(), now.getDate() + daysUntilNextDay);
-  nextDay.setHours(17, 30, 0, 0); // Set time to 5:00 PM
+  nextDay.setHours(17, 7, 0, 0); // Set time to 5:00 PM
   return nextDay;
 }
 
