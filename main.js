@@ -51,12 +51,10 @@ client.on('messageCreate', (message) => {
 
   // Check if user is already in the list
   const user = message.author;
-  let member = client.guilds.fetch(serverid).cache.get(userList.assignedUser).then(() => {
-    if (user == member && Math.random() < 0.15) {
-      message.react('🫵'); message.react('🤣'); message.react('💯'); message.react('💀');
-      console.log(`Reacted to message. ${Date.now()}`)
-    }
-  });
+  if (user.id == userList.assignedUser && Math.random() < 0.125) {
+    message.react('🫵'); message.react('🤣'); message.react('💯'); message.react('💀');
+    console.log(`Reacted to message. ${Date.now()}`)
+  }
 
   if (!userList.users.includes(user.id)) {
     userList.users.push(user.id);
