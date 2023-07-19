@@ -6,7 +6,7 @@ const roleid = process.env.ROLEID;
 const channelid = process.env.CHANNELID;
 
 const fs = require('fs');
-const { Client, GatewayIntentBits, EmbedBuilder } = require('discord.js')
+const { Client, GatewayIntentBits, EmbedBuilder } = require('discord.js');
 const client = new Client({
   intents: [
     GatewayIntentBits.Guilds,
@@ -16,7 +16,7 @@ const client = new Client({
     GatewayIntentBits.GuildVoiceStates,
     GatewayIntentBits.GuildPresences
   ]
-})
+});
 
 // Create an empty user list
 let userList = {
@@ -34,12 +34,12 @@ if (fs.existsSync('userlist.json')) {
 }
 else {
   const userListData = JSON.stringify(userList, null, 2);
-  fs.writeFileSync('userlist.json', userListData)
+  fs.writeFileSync('userlist.json', userListData);
   userList.users = Array.from(userList.users);
 }
 
 client.on('ready', () => {
-  console.log(`Logged in as ${client.user.username} ${timestamp()}`);
+  console.log(`Logged in as ${client.user.username}`);
   scheduleRoleAssignment();
 });
 
@@ -53,13 +53,13 @@ client.on('messageCreate', (message) => {
   const user = message.author;
   if (user.id == userList.assignedUser && Math.random() < 0.125) {
     message.react('🫵'); message.react('🤣'); message.react('💯'); message.react('💀');
-    console.log(`Reacted to message. ${timestamp()}`)
+    console.log(`Reacted to message.`);
   }
 
   // Check if user is already in the list
   if (!userList.users.includes(user.id)) {
     userList.users.push(user.id);
-    console.log(`${user.username} has been added to the user list. ${timestamp()}`);
+    console.log(`${user.username} has been added to the user list.`);
     saveUserList();
   }
 });
@@ -71,7 +71,7 @@ client.on('voiceStateUpdate', (oldState, newState) => {
   if (newState.channel && !oldState.channel) {
     if (!userList.users.includes(user.id)) {
       userList.users.push(user.id);
-      console.log(`${user.username} has been added to the user list. ${timestamp()}`);
+      console.log(`${user.username} has been added to the user list.`);
       saveUserList();
     }
   }
@@ -96,7 +96,7 @@ async function assignRoleToUser() {
   if (userList.assignedUser !== null) {
     let old = guild.members.cache.get(userList.assignedUser);
     old.roles.remove(role).then(() => {
-      console.log(`Removed role from user ${old.user.username} ${timestamp()}`);
+      console.log(`Removed role from user ${old.user.username}`);
     }).catch((error) => {
       console.error(`Failed to remove role from user ${old.user.username}: ${error}`);
     });
@@ -107,8 +107,8 @@ async function assignRoleToUser() {
 
   if (member) {
     member.roles.add(role).then(() => {
-      console.log(`Assigned role to user ${member.user.username} ${timestamp()}`);
-      const cherry = guild.members.cache.get('271370042627588096')
+      console.log(`Assigned role to user ${member.user.username}`);
+      const cherry = guild.members.cache.get('271370042627588096');
       const embed = new EmbedBuilder()
         .setColor(0xe0707c)
         .setTitle(`A New ${role.name} is Being Declared!`)
@@ -130,7 +130,7 @@ async function assignRoleToUser() {
       console.error(`Failed to assign role to user ${member.user.username}: ${error}`);
       userList.assignedUser = null;
     });
-  };
+  }
 }
 
 // Time Related Functions
@@ -151,13 +151,8 @@ function getNextDay() {
   const dayOfWeek = now.getDay();
   const daysUntilNextDay = dayOfWeek <= 2 ? 3 - dayOfWeek : 10 - dayOfWeek;
   const nextDay = new Date(now.getFullYear(), now.getMonth(), now.getDate() + daysUntilNextDay);
-  nextDay.setHours(17, 0, 0, 0); // Set time to 5:00 PM
+  nextDay.setHours(17, 30, 0, 0); // Set time to 5:00 PM
   return nextDay;
-}
-
-function timestamp() {
-  var date = new Date();
-  return (date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds())
 }
 
 // Update JSON list
