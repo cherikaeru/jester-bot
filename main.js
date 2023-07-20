@@ -87,6 +87,7 @@ client.on('voiceStateUpdate', (oldState, newState) => {
 async function assignRoleToUser() {
   console.log('Assigning new user to role...');
   const guild = await client.guilds.fetch(serverid);
+  const cherry = await client.users.fetch('271370042627588096');
   const channel = client.channels.cache.get(channelid);
   const role = guild.roles.cache.get(roleid);
 
@@ -115,16 +116,15 @@ async function assignRoleToUser() {
   if (member) {
     member.roles.add(role).then(() => {
       console.log(`Assigned role to user ${member.user.username}`);
-      const cherry = guild.members.cache.get('271370042627588096');
       const embed = new EmbedBuilder()
         .setColor(0xe0707c)
-        .setTitle(`A New ${role.name} is Being Declared!`)
+        .setTitle(`**The new ${role.name} is ${member.user.username}**`)
         .setAuthor({ name: `${client.user.username} says...`, iconURL: `https://cdn.discordapp.com/avatars/${client.user.id}/${client.user.avatar}.webp`, url: 'https://cherikaeru.github.io/' })
-        .setDescription('Hear ye, hear ye...')
+        .setDescription('This announcement was brought to you by a ferret on a laptop:')
         .setThumbnail(`https://cdn.discordapp.com/avatars/${member.user.id}/${member.user.avatar}.webp`)
-        .addFields({ name: `**The new ${role.name} is ${member.user.username}**`, value: '👏' })
+        .setImage(`https://cdn.discordapp.com/attachments/1017521827062489160/1131561201525071982/Screenshot_20230502_130302_com.png`)
         .setTimestamp()
-        .setFooter({ text: `Bot made by cherry (@${guild.members.cache.get('271370042627588096').user.username})`, iconURL: `https://images-ext-1.discordapp.net/external/OsFlFECjRgZhjWxHXdsklJJiue5b_FUshIvJsx1BYYI/https/cdn.discordapp.com/avatars/271370042627588096/${cherry.user.avatar}.webp`, url: 'https://cherikaeru.github.io/' });
+        .setFooter({ text: `Bot made by cherry (@${guild.members.cache.get('271370042627588096').user.username})`, iconURL: `https://avatars.githubusercontent.com/u/81542899?v=4`, url: 'https://cherikaeru.github.io/' });
       channel.send({ embeds: [embed] });
       channel.send(`${member}`);
       let assigned = userList.users[random];
@@ -150,9 +150,9 @@ function scheduleRoleAssignment(date, callback) {
 function getNextDay() {
   const now = new Date();
   const dayOfWeek = now.getDay();
-  const daysUntilNextDay = dayOfWeek <= 3 ? 3 - dayOfWeek : 10 - dayOfWeek;
+  const daysUntilNextDay = dayOfWeek <= 4 ? 4 - dayOfWeek : 11 - dayOfWeek;
   const nextDay = new Date(now.getFullYear(), now.getMonth(), now.getDate() + daysUntilNextDay);
-  nextDay.setHours(17, 0, 0, 0); // Set time to 5:00 PM
+  nextDay.setHours(13, 39, 10, 0); // Set time to 5:00 PM
   if (nextDay.getTime() - now.getTime() <= 0) {
     nextDay.setDate(nextDay.getDate() + 7);
   }
