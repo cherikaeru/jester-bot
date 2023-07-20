@@ -150,9 +150,9 @@ function scheduleRoleAssignment(date, callback) {
 function getNextDay() {
   const now = new Date();
   const dayOfWeek = now.getDay();
-  const daysUntilNextDay = dayOfWeek <= 4 ? 4 - dayOfWeek : 11 - dayOfWeek;
+  const daysUntilNextDay = dayOfWeek <= 3 ? 3 - dayOfWeek : 10 - dayOfWeek;
   const nextDay = new Date(now.getFullYear(), now.getMonth(), now.getDate() + daysUntilNextDay);
-  nextDay.setHours(13, 9, 30, 0); // Set time to 5:00 PM
+  nextDay.setHours(17, 0, 0, 0); // Set time to 5:00 PM
   if (nextDay.getTime() - now.getTime() <= 0) {
     nextDay.setDate(nextDay.getDate() + 7);
   }
