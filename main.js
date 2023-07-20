@@ -40,11 +40,15 @@ else {
 
 client.on('ready', () => {
   console.log(`Logged in as ${client.user.username}`);
-  scheduleRoleAssignment(getNextDay(), () => {
-    console.log('Assigning new user to role...');
-    assignRoleToUser();
-  });
+  scheduler()
 });
+
+function scheduler() {
+  scheduleRoleAssignment(getNextDay(), () => {
+    assignRoleToUser();
+    return scheduler();
+  });
+}
 
 client.on('messageCreate', (message) => {
   // Ignore messages from bots
@@ -81,6 +85,7 @@ client.on('voiceStateUpdate', (oldState, newState) => {
 });
 
 async function assignRoleToUser() {
+  console.log('Assigning new user to role...');
   const guild = await client.guilds.fetch(serverid);
   const channel = client.channels.cache.get(channelid);
   const role = guild.roles.cache.get(roleid);
@@ -138,21 +143,19 @@ async function assignRoleToUser() {
 // Time scheduling
 function scheduleRoleAssignment(date, callback) {
   const now = new Date();
-  const timeUntilDate = date.getTime() - now.getTime();
-
-  if (timeUntilDate <= 0) {
-    callback();
-  } else {
-    setTimeout(callback, timeUntilDate);
-  }
+  console.log(`Next role assignment: ${date}`);
+  setTimeout(callback, date.getTime() - now.getTime());
 }
 
 function getNextDay() {
   const now = new Date();
   const dayOfWeek = now.getDay();
-  const daysUntilNextDay = dayOfWeek <= 3 ? 3 - dayOfWeek : 10 - dayOfWeek;
+  const daysUntilNextDay = dayOfWeek <= 4 ? 4 - dayOfWeek : 11 - dayOfWeek;
   const nextDay = new Date(now.getFullYear(), now.getMonth(), now.getDate() + daysUntilNextDay);
-  nextDay.setHours(17, 35, 0, 0); // Set time to 5:00 PM
+  nextDay.setHours(13, 9, 30, 0); // Set time to 5:00 PM
+  if (nextDay.getTime() - now.getTime() <= 0) {
+    nextDay.setDate(nextDay.getDate() + 7);
+  }
   return nextDay;
 }
 
