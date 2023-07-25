@@ -6,7 +6,7 @@ const roleid = process.env.ROLEID;
 const channelid = process.env.CHANNELID;
 
 const fs = require('fs');
-const { Client, GatewayIntentBits, EmbedBuilder } = require('discord.js');
+const { Client, GatewayIntentBits, EmbedBuilder, SlashCommandBuilder } = require('discord.js');
 const client = new Client({
   intents: [
     GatewayIntentBits.Guilds,
@@ -40,7 +40,7 @@ else {
 
 client.on('ready', () => {
   console.log(`Logged in as ${client.user.username}`);
-  scheduler()
+  scheduler();
 });
 
 function scheduler() {
@@ -58,9 +58,18 @@ client.on('messageCreate', (message) => {
 
   // Add random reactions
   const user = message.author;
-  if (user.id == userList.assignedUser && Math.random() < 0.125) {
-    message.react('🫵'); message.react('🤣'); message.react('💯'); message.react('💀');
-    console.log(`Reacted to message.`);
+  if (user.id == userList.assignedUser && Math.random() < 0.125 && fs.existsSync('emojis.json')) {
+    var arr = [];
+    const emojiList = fs.readFileSync('emojis.json');
+    emojis = JSON.parse(emojiList);
+    while (arr.length < Math.ceil(Math.random() * 5) + 1) {
+      var r = Math.ceil(Math.random() * emojis.length);
+      if (arr.indexOf(r) === -1) arr.push(r);
+    }
+    for (let i = 0; i < arr.length; i++) {
+      message.react(emojis[arr[i]]);
+    }
+    console.log(`Reacted to a message.`);
   }
 
   // Check if user is already in the list
@@ -87,7 +96,6 @@ client.on('voiceStateUpdate', (oldState, newState) => {
 async function assignRoleToUser() {
   console.log('Assigning new user to role...');
   const guild = await client.guilds.fetch(serverid);
-  const cherry = await client.users.fetch('271370042627588096');
   const channel = client.channels.cache.get(channelid);
   const role = guild.roles.cache.get(roleid);
 
