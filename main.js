@@ -4,7 +4,6 @@ const token = process.env.TOKEN;
 const serverid = process.env.SERVERID;
 const roleid = process.env.ROLEID;
 const channelid = process.env.CHANNELID;
-const minimumrole = process.env.MINIMUMROLE;
 
 const fs = require('fs');
 const { Client, GatewayIntentBits, EmbedBuilder, SlashCommandBuilder } = require('discord.js');
@@ -55,9 +54,7 @@ client.on('messageCreate', (message) => {
   const user = message.author;
 
   // Ignore messages from bots and people who don't have the minimum role required to be entered
-  if (user.bot || !message.member.roles.cache.has(minimumrole)) {
-    return;
-  }
+  if (user.bot) { return; }
 
   // Add random reactions
   if (user.id == userList.assignedUser && Math.random() < 0.125 && fs.existsSync('emojis.json')) {
