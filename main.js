@@ -4,6 +4,7 @@ const token = process.env.TOKEN;
 const serverid = process.env.SERVERID;
 const roleid = process.env.ROLEID;
 const channelid = process.env.CHANNELID;
+const minimumrole = process.env.MINIMUMROLE;
 
 const fs = require('fs');
 const { Client, GatewayIntentBits, EmbedBuilder, SlashCommandBuilder } = require('discord.js');
@@ -51,13 +52,14 @@ function scheduler() {
 }
 
 client.on('messageCreate', (message) => {
-  // Ignore messages from bots
-  if (message.author.bot) {
+  const user = message.author;
+
+  // Ignore messages from bots and people who don't have the minimum role required to be entered
+  if (user.bot || !message.member.roles.cache.has(minimumrole)) {
     return;
   }
 
   // Add random reactions
-  const user = message.author;
   if (user.id == userList.assignedUser && Math.random() < 0.125 && fs.existsSync('emojis.json')) {
     var arr = [];
     const emojiList = fs.readFileSync('emojis.json');
@@ -77,19 +79,6 @@ client.on('messageCreate', (message) => {
     userList.users.push(user.id);
     console.log(`${user.username} has been added to the user list.`);
     saveUserList();
-  }
-});
-
-client.on('voiceStateUpdate', (oldState, newState) => {
-  const user = newState.member.user;
-
-  // Check if the user joined voice
-  if (newState.channel && !oldState.channel) {
-    if (!userList.users.includes(user.id)) {
-      userList.users.push(user.id);
-      console.log(`${user.username} has been added to the user list.`);
-      saveUserList();
-    }
   }
 });
 
